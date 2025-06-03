@@ -11,13 +11,9 @@ import ResetPassword from "./views/auth/ResetPassword";
 import { routeConstants } from "./utils/routeConstant";
 import Header from "./views/header/Header";
 import Home from "./views/home/Home";
+import AuctionDetails from "./views/auctionDetails/AuctionDetails";
 function App() {
-  const dispatch = useDispatch();
-  const { data, isLoading, error } = useSelector((state) => state.test);
-  console.log("data is", data);
-  useEffect(() => {
-    dispatch(fetchTestData());
-  }, []);
+
   return (
     <>
       <BrowserRouter>
@@ -37,6 +33,10 @@ function App() {
           <Route
             path={routeConstants.RESET_PASSWORD}
             element={<ResetPassword />}
+          />
+          <Route
+            path={`${routeConstants.AUCTION_DETAIL}/:id`}
+            element={<AuctionDetails />}
           />
         </Routes>
       </BrowserRouter>
