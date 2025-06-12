@@ -14,6 +14,7 @@ import NoRecord from "../../sharedComponents/noRecord/NoRecord";
 import CustomModal from "../../sharedComponents/customModal/CustomModal";
 import { CONSTANT_NAME } from "../../utils/propertyResolver";
 import PlaceBid from "./components/PlaceBid";
+import Loader from "../../sharedComponents/loader/Loader";
 
 export default function AuctionDetails() {
   const [isPlaceModalShow, setIsPlaceModalShow] = useState(false);
@@ -30,7 +31,7 @@ export default function AuctionDetails() {
   return (
     <>
       {isLoading ? (
-        <h1>Loading...</h1>
+       <Loader />
       ) : !auctionDetail && !isLoading ? (
         <NoRecord />
       ) : (
@@ -80,7 +81,7 @@ export default function AuctionDetails() {
           toggle={toggleModal}
           title={CONSTANT_NAME.PLACE_YOUR_BID}
         >
-          <PlaceBid auctionDetail={auctionDetail}/>
+          <PlaceBid auctionDetail={auctionDetail} toggleModal={toggleModal}/>
         </CustomModal>
       )}
     </>
