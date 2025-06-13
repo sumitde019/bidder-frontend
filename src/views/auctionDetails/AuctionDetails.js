@@ -16,6 +16,8 @@ import { CONSTANT_NAME } from "../../utils/propertyResolver";
 import PlaceBid from "./components/PlaceBid";
 import Loader from "../../sharedComponents/loader/Loader";
 import CustomSlider from "../../sharedComponents/customSlider/CustomSlider";
+import CustomBreadCrumb from "../../sharedComponents/customBreadCrumb/CustomBreadCrumb";
+import { routeConstants } from "../../utils/routeConstant";
 
 export default function AuctionDetails() {
   const [isPlaceModalShow, setIsPlaceModalShow] = useState(false);
@@ -37,6 +39,13 @@ export default function AuctionDetails() {
         <NoRecord />
       ) : (
         <div className="auction-detail-wrapper">
+          <CustomBreadCrumb
+            items={[
+              { name: "Home", route: routeConstants.HOME_PAGE },
+              { name: "Auction", route: routeConstants.SIGN_IN },
+              { name: "Auction Detail", route: routeConstants.AUCTION_DETAIL },
+            ]}
+          />
           <Row>
             <Col md={6}>
               <CustomSlider
@@ -47,6 +56,10 @@ export default function AuctionDetails() {
                   "https://picsum.photos/id/1020/600/400",
                   "https://picsum.photos/id/1024/600/400",
                   "https://picsum.photos/id/1025/600/400",
+                  "https://picsum.photos/id/1033/600/400",
+                  "https://picsum.photos/id/1035/600/400",
+                  "https://picsum.photos/id/1039/600/400",
+                  "https://picsum.photos/id/1043/600/400",
                   "https://picsum.photos/id/1033/600/400",
                   "https://picsum.photos/id/1035/600/400",
                   "https://picsum.photos/id/1039/600/400",
