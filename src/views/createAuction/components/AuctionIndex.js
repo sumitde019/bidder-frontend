@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import cameraIcon from "./../../../assets/icons/camera.svg";
 import editIcon from "./../../../assets/icons/edit.svg";
 import eyeIcon from "./../../../assets/icons/eye.svg";
+import mouseIcon from "./../../../assets/icons/mouse.svg";
 import CustomStepper from "./../../../sharedComponents/customStepper/CustomStepper";
-import AuctionDescription from "./AuctionDescription";
+import AuctionDetails from "./AuctionDetails";
 import { useDispatch } from "react-redux";
 import { getAuctionCategoryLIst } from "../../../redux/slices/auctionSlice";
 import { useSelector } from "react-redux";
 import Loader from "../../../sharedComponents/loader/Loader";
 import { mapToSelectOptions } from "../../../utils/commonFunction";
+import AuctionDescription from "./AuctionDescription";
+import AuctionPhotos from "./AuctionPhotos";
 
 export default function AuctionIndex() {
   const [activeStep, setActiveStep] = useState(0);
@@ -21,6 +24,10 @@ export default function AuctionIndex() {
     photos: [],
   });
   const createAuctionStep = [
+    {
+      label: "Detail",
+      icon: mouseIcon,
+    },
     {
       label: "Description",
       icon: editIcon,
@@ -99,7 +106,7 @@ export default function AuctionIndex() {
       {/* Component goes here on the basis of active index */}
       <div className="auction-form-card container-fluid">
         {activeStep === 0 && (
-          <AuctionDescription
+          <AuctionDetails
             createAuctionState={createAuctionState}
             setCreateAuctionState={setCreateAuctionState}
             handleChange={handleChange}
@@ -108,6 +115,20 @@ export default function AuctionIndex() {
               "name",
               "id"
             )}
+          />
+        )}
+
+        {activeStep === 1 && (
+          <AuctionDescription
+            createAuctionState={createAuctionState}
+            setCreateAuctionState={setCreateAuctionState}
+          />
+        )}
+
+        {activeStep === 2 && (
+          <AuctionPhotos
+          createAuctionState={createAuctionState}
+            setCreateAuctionState={setCreateAuctionState}
           />
         )}
 
