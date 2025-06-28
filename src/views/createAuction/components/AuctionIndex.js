@@ -6,15 +6,19 @@ import mouseIcon from "./../../../assets/icons/mouse.svg";
 import CustomStepper from "./../../../sharedComponents/customStepper/CustomStepper";
 import AuctionDetails from "./AuctionDetails";
 import { useDispatch } from "react-redux";
-import { getAuctionCategoryLIst } from "../../../redux/slices/auctionSlice";
+import {
+  createAuction,
+  getAuctionCategoryLIst,
+  updateAuction,
+} from "../../../redux/slices/auctionSlice";
 import { useSelector } from "react-redux";
 import Loader from "../../../sharedComponents/loader/Loader";
-import { mapToSelectOptions } from "../../../utils/commonFunction";
+import { htmlToText, mapToSelectOptions } from "../../../utils/commonFunction";
 import AuctionDescription from "./AuctionDescription";
 import AuctionPhotos from "./AuctionPhotos";
 import AuctionPreview from "./AuctionPreview";
 
-export default function AuctionIndex() {
+export default function AuctionIndex({ auctionData }) {
   const [activeStep, setActiveStep] = useState(0);
   const [createAuctionState, setCreateAuctionState] = useState({
     productName: "",
@@ -23,7 +27,7 @@ export default function AuctionIndex() {
     endDate: "",
     category: "",
     photos: [],
-    description:""
+    description: "",
   });
   const createAuctionStep = [
     {
@@ -54,26 +58,55 @@ export default function AuctionIndex() {
     dispatch(getAuctionCategoryLIst());
   }, []);
 
+  useEffect(() => {
+    setCreateAuctionState({
+      productName: auctionData?.item_name || "",
+      basePrice: auctionData?.base_price || "",
+      startDate: auctionData?.start_date || "",
+      endDate: auctionData?.end_date || "",
+      category: auctionData?.category
+        ? {
+            value: auctionData?.category?.id,
+            label: auctionData?.category?.name,
+          }
+        : "",
+      photos: auctionData?.images || [],
+      description: auctionData?.description || "",
+    });
+  }, [auctionData]);
+
   //   Validation for each step
   const isStepValid = (stepIndex) => {
     switch (stepIndex) {
       case 0:
-        return true;
+        return (
+          createAuctionState?.productName &&
+          createAuctionState?.basePrice &&
+          createAuctionState?.category &&
+          createAuctionState?.startDate &&
+          createAuctionState?.endDate
+        );
       case 1:
-        return true;
+        return (
+          isStepValid(0) &&
+          htmlToText(createAuctionState?.description || "").trim().length > 0
+        );
       case 2:
-        return isStepValid(0) && isStepValid(1);
+        return isStepValid(1) && createAuctionState?.photos?.length >= 3;
+
+      case 3:
+        return isStepValid(2);
       default:
         return false;
     }
   };
 
   const isStepCompleted = (index) => {
-    return index < activeStep || (index === activeStep && isStepValid(index));
+    return index < activeStep || isStepValid(index);
   };
 
   const handleStepClick = (index) => {
-    if (index === 0 || isStepValid(index)) {
+    if (index === 0 || isStepValid(index - 1)) {
       setActiveStep(index);
     }
   };
@@ -94,6 +127,36 @@ export default function AuctionIndex() {
       ...prevState,
       [name]: value,
     }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const payload = {
+        item_name: createAuctionState?.productName,
+        base_price: createAuctionState?.basePrice,
+        description: createAuctionState?.description,
+        start_date: createAuctionState?.startDate,
+        end_date: createAuctionState?.endDate,
+        category_id: createAuctionState?.category?.value,
+        images: createAuctionState?.photos,
+      };
+      if (auctionData) {
+        return dispatch(updateAuction(payload));
+      }
+      await dispatch(createAuction(payload)).unwrap();
+      setCreateAuctionState({
+        productName: "",
+        basePrice: "",
+        startDate: "",
+        endDate: "",
+        category: "",
+        photos: [],
+        description: "",
+      });
+      setActiveStep(0);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -147,11 +210,21 @@ export default function AuctionIndex() {
             Previous
           </button>
           <button
-            onClick={handleNext}
+            onClick={() => {
+              if (activeStep === createAuctionStep?.length - 1) {
+                handleSubmit();
+              } else {
+                handleNext();
+              }
+            }}
             disabled={!isStepValid(activeStep)}
             className="next-btn"
           >
-            Next
+            {activeStep === createAuctionStep?.length - 1
+              ? auctionData
+                ? "Update"
+                : "Submit"
+              : "Next"}
           </button>
         </div>
       </div>

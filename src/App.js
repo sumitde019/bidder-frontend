@@ -14,6 +14,9 @@ import Home from "./views/home/Home";
 import AuctionDetails from "./views/auctionDetails/AuctionDetails";
 import CreateAuction from "./views/createAuction/CreateAuction";
 import ProtectedRoute from "./ProtectedRoute";
+import AuctionList from "./views/auctionList/AuctionList";
+import UserProfile from "./views/userProfile/UserProfile";
+import UpdateAuction from "./views/createAuction/UpdateAuction";
 function App() {
   return (
     <>
@@ -39,9 +42,20 @@ function App() {
             path={`${routeConstants.AUCTION_DETAIL}/:auction_id`}
             element={<AuctionDetails />}
           />
+          <Route
+            path={`${routeConstants.AUCTION_LIST}`}
+            element={<AuctionList />}
+          />
 
+          <Route path={routeConstants.USER_PROFILE} element={<UserProfile />} />
+          <Route
+            path={`${routeConstants.AUCTION_UPDATE}/:auction_id`}
+            element={<UpdateAuction />}
+          />
           {/* Protected routes */}
-          <Route element={<ProtectedRoute allowedRoles={["admin","super-admin"]} />}>
+          <Route
+            element={<ProtectedRoute allowedRoles={["admin", "super-admin"]} />}
+          >
             <Route
               path={routeConstants.AUCTION_CREATE}
               element={<CreateAuction />}
